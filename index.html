@@ -3430,8 +3430,10 @@ function examDue(p) {
 /* ================= ТОСТ ================= */
 let toastTimer;
 function showToast(icon, title, desc, action) {
+  // title/desc иногда содержат сырой пользовательский ввод (слово, имя профиля) —
+  // всегда экранируем здесь, а не по каждому месту вызова, чтобы не забыть новый случай.
   const t = $("toast");
-  t.innerHTML = `<div class="t-icon">${icon}</div><div><b>${title}</b><p>${desc}</p>${action ? `<button class="btn primary toast-action" id="toast-action">${action.label}</button>` : ""}</div>`;
+  t.innerHTML = `<div class="t-icon">${icon}</div><div><b>${esc(title)}</b><p>${esc(desc)}</p>${action ? `<button class="btn primary toast-action" id="toast-action">${esc(action.label)}</button>` : ""}</div>`;
   t.classList.remove("hidden");
   requestAnimationFrame(() => t.classList.add("show"));
   clearTimeout(toastTimer);
@@ -3765,7 +3767,10 @@ function activateProfile(name) {
 
 function updateStreak() {
   const today = new Date().toDateString();
-  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  // setDate() statt "-86400000мс": на дни перехода летнего времени сутки короче/длиннее
+  // 24 часов, и вычитание фиксированного числа мс могло дать не тот календарный день.
+  const yesterdayDate = new Date(); yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterday = yesterdayDate.toDateString();
   if (profile.lastVisit === today) return;
   if (!profile.lastVisit) { profile.lastVisit = today; return; } // первый визит нового профиля — наград ещё нет
   profile.streak = profile.lastVisit === yesterday ? profile.streak + 1 : 1;
@@ -4226,15 +4231,21 @@ $("btn-dismiss-banner").addEventListener("click", () => $("goal-banner").classLi
 
 /* ================= СЛОВАРЬ (📖) ================= */
 const dictCache = {};
+// На какой запрос box ждёт ответ — чтобы поздний ответ для уже покинутого слова
+// не перезаписал box, если пользователь тем временем открыл словарь для другого слова.
+const dictRequestSeq = new WeakMap();
 // Общая загрузка определения слова — используется и карточками, и быстрым переводчиком.
 function loadDictInto(box, en) {
+  const myId = (dictRequestSeq.get(box) || 0) + 1;
+  dictRequestSeq.set(box, myId);
+  const isCurrent = () => dictRequestSeq.get(box) === myId;
   if (dictCache[en]) { renderDict(box, en); return; }
   box.innerHTML = '<div class="dict-box"><h5>📖 Загрузка...</h5></div>';
   fetch(DICT_URL + encodeURIComponent(en))
     .then(r => r.json())
-    .then(data => { dictCache[en] = data; renderDict(box, en); })
+    .then(data => { dictCache[en] = data; if (isCurrent()) renderDict(box, en); })
     .catch(() => {
-      box.innerHTML = `<div class="dict-box"><h5>📖 ${esc(en)}</h5><p class="def">Нет соединения. Загляни позже.</p></div>`;
+      if (isCurrent()) box.innerHTML = `<div class="dict-box"><h5>📖 ${esc(en)}</h5><p class="def">Нет соединения. Загляни позже.</p></div>`;
     });
 }
 function showDict() {
@@ -4578,7 +4589,7 @@ function renderWordList() {
       renderWordList();
       renderHeader();
       renderLevel();
-      showToast("🗑️", "Слово удалено", `«${esc(w.en)}»`, {
+      showToast("🗑️", "Слово удалено", `«${w.en}»`, {
         label: "↩️ Отменить",
         fn: () => {
           if (!profile.words.some(x => x.en.toLowerCase() === w.en.toLowerCase())) {
@@ -4590,7 +4601,7 @@ function renderWordList() {
           renderWordList();
           renderHeader();
           renderLevel();
-          showToast("✅", "Слово восстановлено", `«${esc(w.en)}» снова в словаре.`);
+          showToast("✅", "Слово восстановлено", `«${w.en}» снова в словаре.`);
         }
       });
     });
@@ -4647,11 +4658,20 @@ function renderHeatmap() {
 function bestStreak() {
   const act = profile.activity || {};
   const days = Object.keys(act).map(d => new Date(d).getTime()).sort((a, b) => a - b);
-  let best = 0, cur = 0, prev = null;
+  let best = 0, cur = 0, prevDate = null;
   days.forEach(t => {
-    cur = (prev !== null && t - prev === 86400000) ? cur + 1 : 1;
+    const d = new Date(t);
+    // Сравниваем календарные дни через setDate (устойчиво к переходу на летнее время),
+    // а не разницу в миллисекундах — сутки перехода бывают короче или длиннее 24 часов.
+    if (prevDate) {
+      const expected = new Date(prevDate);
+      expected.setDate(expected.getDate() + 1);
+      cur = expected.toDateString() === d.toDateString() ? cur + 1 : 1;
+    } else {
+      cur = 1;
+    }
     if (cur > best) best = cur;
-    prev = t;
+    prevDate = d;
   });
   return best;
 }
@@ -4660,7 +4680,10 @@ function renderStats() {
   const act = profile.activity || {};
   $("stat-today").textContent = act[todayStr()] || 0;
   let week = 0;
-  for (let i = 0; i < 7; i++) week += act[new Date(Date.now() - i * 86400000).toDateString()] || 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    week += act[d.toDateString()] || 0;
+  }
   $("stat-week").textContent = week;
   $("stat-total").textContent = learnedCount();
   const days = Object.keys(act).filter(k => act[k] > 0).length;
@@ -4700,7 +4723,8 @@ function renderEventLog() {
     return;
   }
   const today = todayStr();
-  const yest = new Date(Date.now() - 86400000).toDateString();
+  const yestDate = new Date(); yestDate.setDate(yestDate.getDate() - 1);
+  const yest = yestDate.toDateString();
   el.innerHTML = evs.slice(0, 50).map(e => {
     const d = new Date(e.t);
     const dayLabel = d.toDateString() === today ? "Сегодня" : d.toDateString() === yest ? "Вчера" : d.toLocaleDateString("ru-RU", { day: "numeric", month: "short" });
@@ -5892,17 +5916,20 @@ const EXAM_CFG = [
 function examCfg() { return EXAM_CFG[Math.max(0, Math.min(clIndex(), EXAM_CFG.length - 1))]; }
 
 function examWordPool(qty) {
-  const ci = clIndex();
-  const target = ci < LEVELS.length - 1 ? profile.words.slice(0, LEVELS[ci + 1].max) : profile.words;
-  const learned = target.filter(w => profile.learned[w.en]);
+  // Слова учатся в случайном порядке (см. cardPool()/shuffle), а не по позиции в массиве,
+  // поэтому ограничение "первые N слов = этот уровень" почти никогда не набирало нужное
+  // количество выученных слов — экзамен был фактически несдаваемым. Берём из ВСЕХ выученных.
+  const learned = profile.words.filter(w => profile.learned[w.en]);
   return learned.length >= qty ? shuffle([...learned]).slice(0, qty) : shuffle([...learned]);
 }
 function examGramParts(qty) {
   const CI = clIndex();
-  const pool = GRAMMAR.filter(g => LEVELS.findIndex(l => l.code === g.lv) <= CI && g.q && g.q.length);
-  const qs = [];
-  shuffle([...pool]).slice(0, qty).forEach(g => qs.push({ topic: g.t, q: g.q[Math.floor(Math.random() * g.q.length)] }));
-  return qs;
+  // Собираем пары (тема, вопрос) по отдельности, а не "1 вопрос на тему" — иначе на
+  // ранних уровнях, где открыта всего 1 тема, набрать qty>1 вопросов было невозможно.
+  const pairs = [];
+  GRAMMAR.filter(g => LEVELS.findIndex(l => l.code === g.lv) <= CI && g.q && g.q.length)
+    .forEach(g => g.q.forEach(q => pairs.push({ topic: g.t, q })));
+  return shuffle(pairs).slice(0, qty);
 }
 
 function examLog(step, pct, pass) {
@@ -5956,10 +5983,13 @@ function renderExamIntro() {
     <p>${due ? `<b>Экзамен на уровень ${next ? next.code : "💯"}</b> — по стандартам CEFR (как Cambridge): три части «Слова», «Грамматика» и «Аудирование». Всего ${totalQ} вопросов, ${cfg.sec} сек на вопрос, пороги ${EXAM_WORD_PASS}/${EXAM_GRAM_PASS}/${EXAM_LISTEN_PASS}%. Длительность ≈ ${mins} мин.` : "Экзамен пока недоступен. Выполни условия ниже:"}</p>
     ${due ? `<div class="muted" style="margin-top:6px">Уровень ${next ? next.code : ""} по CEFR — словарный ориентир: ${next ? next.vocab : ""} слов.</div>` : ""}
     ${due ? "" : `<div style="text-align:left;margin-top:12px;font-size:13px">${examChecklist()}</div>`}
-    <div style="margin-top:16px">${due && next ? `<button class="btn primary" id="btn-exam">Начать экзамен</button>` : `<button class="btn primary" id="btn-exam-back">К главной</button>`}
+    <div style="margin-top:16px">${due && next ? `<button class="btn primary" id="btn-exam-start">Начать экзамен</button>` : `<button class="btn primary" id="btn-exam-back">К главной</button>`}
     <button class="btn secondary" id="exam-cancel" style="margin-left:8px">На главную</button></div>
     ${histHtml}</div>`;
-  const s = $("btn-exam"), b = $("btn-exam-back");
+  // Отдельный id от кнопки в exam-box (level-panel): оба присутствуют в DOM одновременно,
+  // а getElementById всегда вернул бы более раннюю по порядку в документе — кнопка на
+  // вкладке "Экзамен" оставалась без обработчика клика.
+  const s = $("btn-exam-start"), b = $("btn-exam-back");
   if (s) s.addEventListener("click", startExam);
   if (b) b.addEventListener("click", () => showView('cards'));
   $("exam-cancel").addEventListener("click", () => showView('cards'));
