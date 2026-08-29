@@ -3,41 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>English Learner — учи английский</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<title>LinguaLand — учи английский</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 80'><rect width='60' height='80' fill='%23123B7A'/><rect x='6' y='6' width='9' height='68' fill='%23fff'/><rect x='6' y='58' width='40' height='16' fill='%23fff'/><rect x='30' y='6' width='9' height='12' fill='%23DD1F2C'/><rect x='30' y='24' width='9' height='34' fill='%23DD1F2C'/></svg>">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#123B7A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   :root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --accent: #38bdf8;
-    --accent-2: #a78bfa;
+    --bg: #0b1a3a;
+    --card: #132754;
+    --accent: #3B6FD9;
+    --accent-2: #FF4B57;
     --good: #34d399;
     --bad: #f87171;
     --gold: #fbbf24;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --border: #334155;
-    --input: #243349;
-    --hvr: #334155;
-    --bg2: #1e293b;
+    --text: #e6ebf7;
+    --muted: #9aa9c9;
+    --border: #24406e;
+    --input: #1a2f5e;
+    --hvr: #1e3567;
+    --bg2: #132754;
   }
   body.light {
     --bg: #eef2f7;
     --card: #ffffff;
-    --accent: #0284c7;
-    --accent-2: #7c3aed;
+    --accent: #123B7A;
+    --accent-2: #DD1F2C;
     --good: #059669;
-    --bad: #dc2626;
+    --bad: #DD1F2C;
     --gold: #d97706;
-    --text: #0f172a;
-    --muted: #64748b;
-    --border: #d7dee8;
-    --input: #f4f7fb;
-    --hvr: #e3ecf7;
+    --text: #101B33;
+    --muted: #5B6B8C;
+    --border: #D8E1F0;
+    --input: #F3F6FC;
+    --hvr: #E7EEFA;
     --bg2: #dbeafe;
   }
   body.light .banner { background: #e0f2fe; border-color: #7dd3fc; }
@@ -52,8 +52,8 @@
     padding: 20px;
   }
   .app { width: 100%; max-width: 560px; }
-  h1 { font-size: 22px; }
-  h1 span { color: var(--accent); }
+  h1 { font-size: 22px; color: var(--accent); }
+  h1 span { color: var(--accent-2); }
   .hidden { display: none !important; }
 
   /* ---------- Экран профилей ---------- */
@@ -631,7 +631,7 @@
 
 <!-- Экран профилей -->
 <div id="profile-screen" class="app hidden">
-  <h1>English<span>Learner</span></h1>
+  <h1>Lingua<span>Land</span></h1>
   <div class="sub">Учи английский в игровой форме</div>
   <div id="profile-list"></div>
   <button class="btn primary" id="btn-show-new">+ Новый профиль</button>
@@ -3710,7 +3710,7 @@ function renderObStep() {
 }
 function finishOnboarding() {
   profile.onboarded = true;
-  logEvent("🚀", "Добро пожаловать в EnglishLearner!");
+  logEvent("🚀", "Добро пожаловать в LinguaLand!");
   saveAll();
   $("onboarding-modal").classList.add("hidden");
   renderHeader();
@@ -4733,9 +4733,9 @@ function renderEventLog() {
 }
 
 function shareProgress() {
-  const text = `📚 Я выучил ${learnedCount()} слов в EnglishLearner!\nУровень: ${clLevel().code} · Серия: ${profile.streak} дн. · Цель: ${profile.goal || 10} слов в день. Присоединяйся!`;
+  const text = `📚 Я выучил ${learnedCount()} слов в LinguaLand!\nУровень: ${clLevel().code} · Серия: ${profile.streak} дн. · Цель: ${profile.goal || 10} слов в день. Присоединяйся!`;
   if (navigator.share) {
-    navigator.share({ title: "Мой прогресс в EnglishLearner", text }).catch(() => {});
+    navigator.share({ title: "Мой прогресс в LinguaLand", text }).catch(() => {});
   } else if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text)
       .then(() => showToast("🔗", "Скопировано", "Текст прогресса в буфере — вставь куда хочешь."))
@@ -6147,7 +6147,7 @@ $("exam-box").addEventListener("click", e => {
 
 /* ================= ЭКСПОРТ / ИМПОРТ ================= */
 function exportProfiles() {
-  const data = JSON.stringify({ app: "EnglishLearner", exported: new Date().toISOString(), profiles }, null, 2);
+  const data = JSON.stringify({ app: "LinguaLand", exported: new Date().toISOString(), profiles }, null, 2);
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([data], { type: "application/json" }));
   a.download = "english-learner-backup.json";

@@ -1,13 +1,13 @@
 {
-  "name": "EnglishLearner — учи английский",
-  "short_name": "EnglishLearner",
+  "name": "LinguaLand — учи английский",
+  "short_name": "LinguaLand",
   "description": "Тренажёр английского языка: карточки с интервальным повторением, тесты, практика, экзамены по уровням CEFR (A0–C2), грамматика.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#123B7A",
+  "theme_color": "#123B7A",
   "lang": "ru",
   "icons": [
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
