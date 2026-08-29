@@ -1177,7 +1177,6 @@ function isDue(w) {
   const e = profile.learned[w.en];
   return !!e && e.next <= Date.now();
 }
-function srsLevelOf(w) { return (profile.learned[w.en] || {}).lvl || 0; }
 function addXp(n, silent) {
   profile.xp = (profile.xp || 0) + n;
   profile.xpWeek = (profile.xpWeek || 0) + n;
@@ -4227,18 +4226,21 @@ $("btn-dismiss-banner").addEventListener("click", () => $("goal-banner").classLi
 
 /* ================= СЛОВАРЬ (📖) ================= */
 const dictCache = {};
+// Общая загрузка определения слова — используется и карточками, и быстрым переводчиком.
+function loadDictInto(box, en) {
+  if (dictCache[en]) { renderDict(box, en); return; }
+  box.innerHTML = '<div class="dict-box"><h5>📖 Загрузка...</h5></div>';
+  fetch(DICT_URL + encodeURIComponent(en))
+    .then(r => r.json())
+    .then(data => { dictCache[en] = data; renderDict(box, en); })
+    .catch(() => {
+      box.innerHTML = `<div class="dict-box"><h5>📖 ${esc(en)}</h5><p class="def">Нет соединения. Загляни позже.</p></div>`;
+    });
+}
 function showDict() {
   const w = deck[cardIdx];
   if (!w) return;
-  const box = $("dict-box");
-  if (dictCache[w.en]) { renderDict(box, w.en); return; }
-  box.innerHTML = '<div class="dict-box"><h5>📖 Загрузка...</h5></div>';
-  fetch(DICT_URL + encodeURIComponent(w.en))
-    .then(r => r.json())
-    .then(data => { dictCache[w.en] = data; renderDict(box, w.en); })
-    .catch(() => {
-      box.innerHTML = `<div class="dict-box"><h5>📖 ${esc(w.en)}</h5><p class="def">Нет соединения. Загляни позже.</p></div>`;
-    });
+  loadDictInto($("dict-box"), w.en);
 }
 function renderDict(box, en) {
   const d = dictCache[en];
@@ -6199,13 +6201,7 @@ function renderTranslator() {
     row.addEventListener("click", () => {
       const en = row.dataset.en;
       speak(en);
-      const box = $("dict-box");
-      if (dictCache[en]) { renderDict(box, en); return; }
-      box.innerHTML = '<div class="dict-box"><h5>📖 Загрузка...</h5></div>';
-      fetch(DICT_URL + encodeURIComponent(en))
-        .then(r => r.json())
-        .then(d => { dictCache[en] = d; renderDict(box, en); })
-        .catch(() => { box.innerHTML = `<div class="dict-box"><h5>📖 ${esc(en)}</h5><p class="def">Нет соединения.</p></div>`; });
+      loadDictInto($("dict-box"), en);
     });
   });
 }
@@ -6393,7 +6389,8 @@ function renderPractice() {
 
   if (s.ex === "gap") {
     const escTarget = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const blanked = en.replace(new RegExp(escTarget, "i"), () => "______");
+    // Границы слова, чтобы не задеть часть другого слова (например "cat" внутри "category")
+    const blanked = en.replace(new RegExp(`\\b${escTarget}\\b`, "i"), () => "______");
     const opts = shuffle(others.slice(0, 3).map(x => x[2]).concat([target]));
     body.innerHTML = `
       <div class="quiz-q" data-answer="${esc(en)}">
