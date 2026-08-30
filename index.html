@@ -9,56 +9,20 @@
 <meta name="theme-color" content="#123B7A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>
-  :root {
-    --bg: #0b1a3a;
-    --card: #132754;
-    --accent: #3B6FD9;
-    --accent-2: #FF4B57;
-    --good: #34d399;
-    --bad: #f87171;
-    --gold: #fbbf24;
-    --text: #e6ebf7;
-    --muted: #9aa9c9;
-    --border: #24406e;
-    --input: #1a2f5e;
-    --hvr: #1e3567;
-    --bg2: #132754;
-  }
-  body.light {
-    --bg: #eef2f7;
-    --card: #ffffff;
-    --accent: #123B7A;
-    --accent-2: #DD1F2C;
-    --good: #059669;
-    --bad: #DD1F2C;
-    --gold: #d97706;
-    --text: #101B33;
-    --muted: #5B6B8C;
-    --border: #D8E1F0;
-    --input: #F3F6FC;
-    --hvr: #E7EEFA;
-    --bg2: #dbeafe;
-  }
-  body.light .banner { background: #e0f2fe; border-color: #7dd3fc; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: linear-gradient(135deg, var(--bg), var(--bg2));
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-  }
-  .app { width: 100%; max-width: 560px; }
-  h1 { font-size: 22px; color: var(--accent); }
-  h1 span { color: var(--accent-2); }
-  .hidden { display: none !important; }
 
-  /* ---------- Экран профилей ---------- */
-  #profile-screen { text-align: center; padding-top: 40px; }
-  #profile-screen h1 { font-size: 32px; margin-bottom: 6px; }
+<!-- Подключение CSS модулей -->
+<link rel="stylesheet" href="./src/css/variables.css">
+<link rel="stylesheet" href="./src/css/components.css">
+<link rel="stylesheet" href="./src/css/views.css">
+<link rel="stylesheet" href="./src/css/styles.css">
+
+<!-- CSP для защиты от XSS -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' data:; font-src 'self' data:;">
+
+<style>
+  /* Минимальные инлайн стили для предотвращения FOUC */
+  .hidden { display: none !important; }
+</style>
   #profile-screen .sub { color: var(--muted); margin-bottom: 24px; }
   .prof-item {
     display: flex;
