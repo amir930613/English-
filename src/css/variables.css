@@ -1,0 +1,75 @@
+/**
+ * LinguaLand CSS Variables
+ * Цветовая схема и общие переменные
+ */
+
+:root {
+  /* Тёмная тема (по умолчанию) */
+  --bg: #0b1a3a;
+  --bg2: #132754;
+  --card: #132754;
+  --accent: #3B6FD9;
+  --accent-2: #FF4B57;
+  --good: #34d399;
+  --bad: #f87171;
+  --gold: #fbbf24;
+  --text: #e6ebf7;
+  --muted: #9aa9c9;
+  --border: #24406e;
+  --input: #1a2f5e;
+  --hvr: #1e3567;
+  
+  /* Размеры */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* Отступы */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 14px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  
+  /* Шрифты */
+  --font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 32px;
+  
+  /* Переходы */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  
+  /* Тени */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Светлая тема */
+body.light {
+  --bg: #eef2f7;
+  --bg2: #dbeafe;
+  --card: #ffffff;
+  --accent: #123B7A;
+  --accent-2: #DD1F2C;
+  --good: #059669;
+  --bad: #DD1F2C;
+  --gold: #d97706;
+  --text: #101B33;
+  --muted: #5B6B8C;
+  --border: #D8E1F0;
+  --input: #F3F6FC;
+  --hvr: #E7EEFA;
+}
+
+body.light .banner {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+}

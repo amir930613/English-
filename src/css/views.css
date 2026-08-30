@@ -1,0 +1,401 @@
+/**
+ * LinguaLand Views CSS
+ * Стили для отдельных экранов и видов
+ */
+
+/* Profile Screen */
+#profile-screen {
+  text-align: center;
+  padding-top: 40px;
+}
+
+#profile-screen h1 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: 6px;
+}
+
+#profile-screen .sub {
+  color: var(--muted);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Main Screen */
+#main-screen {
+  padding-top: var(--spacing-lg);
+}
+
+.main-menu {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.menu-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.menu-item .icon {
+  font-size: 24px;
+}
+
+.menu-item .text {
+  flex: 1;
+  text-align: left;
+}
+
+.menu-item .text .title {
+  font-weight: 600;
+}
+
+.menu-item .text .desc {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+}
+
+/* Cards Screen */
+.card-container {
+  perspective: 1000px;
+  margin: var(--spacing-lg) 0;
+}
+
+.flashcard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.flashcard.revealed {
+  border-color: var(--good);
+}
+
+.flashcard .word {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+}
+
+.flashcard .translation {
+  font-size: 24px;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.flashcard.revealed .translation {
+  opacity: 1;
+}
+
+.flashcard .example {
+  margin-top: var(--spacing-lg);
+  font-style: italic;
+  color: var(--muted);
+  text-align: center;
+}
+
+.card-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+/* Quiz Screen */
+.quiz-question {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+}
+
+.quiz-question .question-text {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: var(--spacing-lg);
+}
+
+.quiz-options {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.quiz-option {
+  padding: var(--spacing-md);
+  background: var(--input);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.quiz-option:hover {
+  border-color: var(--accent);
+}
+
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.quiz-option.correct {
+  border-color: var(--good);
+  background: var(--good);
+  color: #fff;
+}
+
+.quiz-option.incorrect {
+  border-color: var(--bad);
+  background: var(--bad);
+  color: #fff;
+}
+
+/* Exam Screen */
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--card);
+  border-radius: var(--radius-md);
+}
+
+.exam-timer {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.exam-progress {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+}
+
+/* Practice Screen */
+.practice-container {
+  margin: var(--spacing-lg) 0;
+}
+
+.practice-sentence {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.practice-sentence .en {
+  font-size: 18px;
+  margin-bottom: var(--spacing-md);
+}
+
+.practice-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--input);
+  color: var(--text);
+  font-size: var(--font-size-md);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.practice-feedback {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  background: var(--input);
+}
+
+.practice-feedback.correct {
+  border-left: 4px solid var(--good);
+}
+
+.practice-feedback.incorrect {
+  border-left: 4px solid var(--bad);
+}
+
+/* Grammar Screen */
+.grammar-rule {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-sm) 0;
+}
+
+.grammar-rule .title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: var(--spacing-sm);
+}
+
+.grammar-rule .description {
+  color: var(--text);
+  margin-bottom: var(--spacing-md);
+}
+
+.grammar-rule .examples {
+  background: var(--input);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+}
+
+.grammar-rule .examples li {
+  margin: var(--spacing-xs) 0;
+  color: var(--muted);
+}
+
+/* Stats Screen */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+}
+
+.stat-card .value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-card .label {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Achievements Screen */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.achievement-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  text-align: center;
+  opacity: 0.5;
+  transition: var(--transition-normal);
+}
+
+.achievement-item.earned {
+  opacity: 1;
+  border-color: var(--gold);
+}
+
+.achievement-item .icon {
+  font-size: 32px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.achievement-item .name {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+/* Settings Screen */
+.settings-list {
+  display: grid;
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.setting-item .label {
+  font-weight: 500;
+}
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  appearance: none;
+  background: var(--border);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.toggle:checked {
+  background: var(--accent);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: var(--transition-fast);
+}
+
+.toggle:checked::after {
+  left: 27px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: var(--spacing-md);
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-controls {
+    grid-template-columns: 1fr;
+  }
+}
